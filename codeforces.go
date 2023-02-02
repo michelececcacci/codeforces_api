@@ -1,5 +1,5 @@
-// utility package that allows access to the codeforces API.
-// Some functions require authentication. For more informations on how to 
+// Utility package that allows access to the codeforces API.
+// Some functions require authentication. For more informations on how to
 // get your API key and secret, please refer here: https://codeforces.com/apiHelp
 package codeforces
 
