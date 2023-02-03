@@ -36,6 +36,8 @@ func TestEntryByIdValid(t *testing.T) {
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
 	bs := blogService{c}
 	resp, err := bs.EntryById(123)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
 	assert.Equal(t, "ru", resp.OriginalLocale)
 	assert.False(t, resp.AllowViewHistory)
 	assert.Equal(t, 1267562173, resp.CreationTimeSeconds)
@@ -46,7 +48,6 @@ func TestEntryByIdValid(t *testing.T) {
 	assert.Equal(t, "Codeforces Maintenance", resp.Title)
 	assert.Equal(t, "en", resp.Locale)
 	assert.Equal(t, []string{"codeforces", "maintenance"}, resp.Tags)
-	assert.Nil(t, err)
 }
 
 func TestEntryByIdInvalid(t *testing.T) {
@@ -178,6 +179,7 @@ func TestHacks(t *testing.T) {
 
 	assert.Len(t, *(resp), 2)
 	assert.Nil(t, err)
+	assert.NotNil(t, resp)
 	assert.Equal(t, 160426, (*resp)[0].ID)
 	assert.Equal(t, firstHacker, (*resp)[0].Hacker)
 }
@@ -211,7 +213,9 @@ func TestInfoSingleUser(t *testing.T) {
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
 	defer ts.Close()
 	us := userService{c}
-	resp, _ := us.Info([]string{"tourist"})
+	resp, err := us.Info([]string{"tourist"})
+	assert.Nil(t,err)
+	assert.NotNil(t, resp)
 	assert.Len(t, (*resp), 1)
 	assert.Equal(t, "Korotkevich", (*resp)[0].LastName)
 	assert.Equal(t, 3803, (*resp)[0].Rating)
@@ -267,7 +271,9 @@ func TestInfoMultipleUsers(t *testing.T) {
 	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
 	us := userService{c}
-	resp, _ := us.Info([]string{"tourist", "benq"})
+	resp, err := us.Info([]string{"tourist", "benq"})
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
 	assert.Len(t, (*resp), 2)
 	tourist := (*resp)[0]
 	benq := (*resp)[1]
@@ -276,18 +282,6 @@ func TestInfoMultipleUsers(t *testing.T) {
 	assert.Equal(t, "Gennady", tourist.FirstName)
 	assert.Equal(t, "Qi", benq.LastName)
 	assert.Equal(t, "United States", benq.Country)
-}
-
-func TestStatus(t *testing.T) {
-	// ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	w.WriteHeader(200)
-	// 	w.Write([]byte(`{
-	// 	}`))
-	// }))
-	// defer ts.Close()
-	// c := newDefaultClientWrapper(ts.URL+"/", "")
-	// cs := contestService{c}
-	// resp, err := cs.Status(566, 1, 2, "tourist")
 }
 
 func TestRating(t *testing.T) {
@@ -331,11 +325,12 @@ func TestRating(t *testing.T) {
 	}
 	resp, err := us.Rating("tourist")
 	assert.Nil(t, err)
+	assert.NotNil(t, resp)
 	assert.Len(t, (*resp), 2)
 	assert.Equal(t, (*resp)[0], firstResult)
 }
 
-func StandingsTest(t *testing.T) {
+func TestStatus(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		w.Write([]byte(`{
@@ -380,13 +375,16 @@ func StandingsTest(t *testing.T) {
 			]
 		}`))
 	}))
+	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
 	cs := contestService{c}
 	resp, err := cs.Status(566, 1, 2, "tourist")
-	assert.Equal(t, resp.ID, 12291750)
-	assert.Equal(t, resp.ContestID, 566)
-	assert.Equal(t, resp.Problem.Index, "A")
 	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Len(t, *resp, 1)
+	assert.Equal(t, (*resp)[0].ID, 12291750)
+	assert.Equal(t, (*resp)[0].ContestID, 566)
+	assert.Equal(t, (*resp)[0].Problem.Index, "A")
 }
 
 // Even though API seems to return tags in sorted order, we just ignore that
@@ -441,9 +439,10 @@ func TestProblemSet(t *testing.T) {
 		Tags:      tags,
 	}
 	// we don't really care about order of tags, so we can just sort both
+	assert.NotNil(t, resp)
+	assert.Nil(t, err)
 	sort.Strings(tags)
 	sort.Strings(problem.Tags)
-	assert.Nil(t, err)
 	assert.Len(t, resp.Problems, 1)
 	assert.Len(t, resp.ProblemStatistics, 1)
 	assert.Equal(t, problem, resp.Problems[0])

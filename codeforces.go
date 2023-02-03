@@ -55,7 +55,6 @@ func newDefaultClientWrapper(baseUrlString, apiKey, apiSecret string) *httpClien
 	}
 }
 
-// TODO auth still not working
 func (c *httpClientWrapper) Get(suffix string, userParams map[string]string) (*http.Response, error) {
 	base, err := url.Parse(c.baseUrlString + suffix)
 	if err != nil {
@@ -168,18 +167,18 @@ func (s *contestService) Standings(contestId, from, count uint, handles []string
 	return &rw.Result, nil
 }
 
-func (s *contestService) Status(contestId, from, count uint, handle string) (*ContestStatus, error) {
+func (s *contestService) Status(contestId, from, count uint, handle string) (*[]ContestStatus, error) {
 	params := map[string]string{
 		"contestId": fmt.Sprint(contestId),
 		"from":      fmt.Sprint(from),
 		"count":     fmt.Sprint(count),
 		"handle":    handle}
-	resp, err := s.client.Get("standings", params)
+	resp, err := s.client.Get("contest.status", params)
 	err = HandleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[ContestStatus]{}
+	var rw = ResultWrapper[[]ContestStatus]{}
 	err = UnmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
