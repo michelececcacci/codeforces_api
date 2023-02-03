@@ -12,7 +12,7 @@ import (
 func TestEntryByIdValid(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte(`
+		_, err := w.Write([]byte(`
 		{
 			"status": "OK",
 			"result": {
@@ -31,6 +31,7 @@ func TestEntryByIdValid(t *testing.T) {
 				]
 			}
 		}`))
+		assert.Nil(t, err)
 	}))
 	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
@@ -65,7 +66,7 @@ func TestEntryByIdInvalid(t *testing.T) {
 func TestHacks(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 				"status": "OK",
 				"result": [
 					{
@@ -163,7 +164,8 @@ func TestHacks(t *testing.T) {
 					}
 					}
 				]
-	}`))
+		}`))
+		assert.Nil(t, err)
 	}))
 	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
@@ -188,7 +190,7 @@ func TestHacks(t *testing.T) {
 func TestInfoSingleUser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte(`{
+		_ , err := w.Write([]byte(`{
 			"status":"OK",
 			"result":[
 				{
@@ -209,12 +211,13 @@ func TestInfoSingleUser(t *testing.T) {
 					"registrationTimeSeconds":1265987288,
 					"maxRank":"legendary grandmaster"}]
 				}`))
+		assert.Nil(t, err)
 	}))
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
 	defer ts.Close()
 	us := userService{c}
 	resp, err := us.Info([]string{"tourist"})
-	assert.Nil(t,err)
+	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Len(t, (*resp), 1)
 	assert.Equal(t, "Korotkevich", (*resp)[0].LastName)
@@ -226,7 +229,7 @@ func TestInfoSingleUser(t *testing.T) {
 func TestInfoMultipleUsers(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 			"status": "OK",
 			"result": [
 				{
@@ -267,6 +270,7 @@ func TestInfoMultipleUsers(t *testing.T) {
 				}
 			]
 		}`))
+		assert.Nil(t, err)
 	}))
 	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
@@ -287,7 +291,7 @@ func TestInfoMultipleUsers(t *testing.T) {
 func TestRating(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 			"status": "OK",
 			"result": [
 				{
@@ -310,6 +314,7 @@ func TestRating(t *testing.T) {
 				}
 			]
 		}`))
+		assert.Nil(t, err)
 	}))
 	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
@@ -333,7 +338,7 @@ func TestRating(t *testing.T) {
 func TestStatus(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte(`{
+		_, err :=  w.Write([]byte(`{
 			"status": "OK",
 			"result": [
 				{
@@ -374,6 +379,7 @@ func TestStatus(t *testing.T) {
 				}
 			]
 		}`))
+		assert.Nil(t, err)
 	}))
 	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
@@ -392,7 +398,7 @@ func TestStatus(t *testing.T) {
 func TestProblemSet(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 			"status": "OK",
 			"result": {
 				"problems": [
@@ -420,6 +426,7 @@ func TestProblemSet(t *testing.T) {
 				]
 			}
 		}`))
+		assert.Nil(t, err)
 	}))
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
 	ps := problemService{c}
