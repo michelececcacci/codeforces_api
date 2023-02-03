@@ -85,6 +85,21 @@ type userService service
 type contestService service
 type problemService service
 
+func (s *blogService) Comments(id uint) (*[]Comment, error) {
+	params := map[string]string{"blogEntryId": fmt.Sprint(id)}
+	resp, err := s.client.Get("blogEntry.comments", params)
+	err = HandleResponseStatusCode(resp, err)
+	if err != nil {
+		return nil, err
+	}
+	var rw = ResultWrapper[[]Comment]{}
+	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return &rw.Result, nil
+}
+
 func (s *blogService) EntryById(id uint) (*BlogEntry, error) {
 	params := map[string]string{"blogEntryId": fmt.Sprint(id)}
 	resp, err := s.client.Get("blogEntry.view", params)

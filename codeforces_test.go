@@ -190,7 +190,7 @@ func TestHacks(t *testing.T) {
 func TestInfoSingleUser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_ , err := w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 			"status":"OK",
 			"result":[
 				{
@@ -338,7 +338,7 @@ func TestRating(t *testing.T) {
 func TestStatus(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err :=  w.Write([]byte(`{
+		_, err := w.Write([]byte(`{
 			"status": "OK",
 			"result": [
 				{
@@ -453,4 +453,49 @@ func TestProblemSet(t *testing.T) {
 	assert.Len(t, resp.Problems, 1)
 	assert.Len(t, resp.ProblemStatistics, 1)
 	assert.Equal(t, problem, resp.Problems[0])
+}
+
+func TestComments(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, err := w.Write([]byte(
+			`{
+			"status": "OK",
+			"result": [
+				{
+				"id": 1297,
+				"creationTimeSeconds": 1267711734,
+				"commentatorHandle": "muntasir",
+				"locale": "en",
+				"text": "<div class=\"ttypography\">I'm not sure that the Python interpreter is actually 2.6. I get runtime error every time I try to import the <a href=\"http://docs.python.org/library/collections\">collections</a> module. Could you please look into the matter? Thanks.</div>",
+				"rating": 0
+				},
+				{
+				"id": 1326,
+				"creationTimeSeconds": 1267733481,
+				"commentatorHandle": "anastasov.bg",
+				"locale": "en",
+				"text": "<div class=\"ttypography\">There are so many switches, which are passed to GNU C++ 4 compiler. Is there any page, which describes what each one of them does?<br /><br />And why C++ and C are compiled in the exact same way?</div>",
+				"rating": 0
+				}
+			]
+		}`))
+		assert.Nil(t, err)
+	}))
+	defer ts.Close()
+	c := newDefaultClientWrapper(ts.URL+"/", "", "")
+	bs := blogService{c}
+	resp, err := bs.Comments(79)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Len(t, *resp, 2)
+	firstComment := Comment{
+		ID:                  1297,
+		CreationTimeSeconds: 1267711734,
+		CommentatorHandle:   "muntasir",
+		Locale:              "en",
+		Text:                "<div class=\"ttypography\">I'm not sure that the Python interpreter is actually 2.6. I get runtime error every time I try to import the <a href=\"http://docs.python.org/library/collections\">collections</a> module. Could you please look into the matter? Thanks.</div>",
+		Rating:              0,
+	}
+	assert.Equal(t, (*resp)[0], firstComment)
 }
