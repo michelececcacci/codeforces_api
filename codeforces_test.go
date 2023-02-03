@@ -214,7 +214,7 @@ func TestInfoSingleUser(t *testing.T) {
 	defer ts.Close()
 	us := userService{c}
 	resp, err := us.Info([]string{"tourist"})
-	assert.Nil(t,err)
+	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Len(t, (*resp), 1)
 	assert.Equal(t, "Korotkevich", (*resp)[0].LastName)
