@@ -130,6 +130,21 @@ func (s *contestService) Hacks(id uint) (*ContestHack, error) {
 	return &rw.Result, nil
 }
 
+func (s *contestService) List(gym bool) (*[]Contest, error) {
+	params := map[string]string{"gym": fmt.Sprint(gym)}
+	resp, err := s.client.Get("contest.list", params)
+	err = HandleResponseStatusCode(resp, err)
+	if err != nil {
+		return nil, err
+	}
+	var rw = ResultWrapper[[]Contest]{}
+	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return &rw.Result, err
+}
+
 func (s *userService) Info(users []string) (*[]User, error) {
 	params := map[string]string{"handles": strings.Join(users, ";")}
 	resp, err := s.client.Get("info", params)

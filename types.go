@@ -106,7 +106,7 @@ type Contest struct {
 	ID                  int    `json:"id"`
 	Name                string `json:"name"`
 	Type                string `json:"type"`
-	Phase               string `json:"phase"`
+	Phase               string `json:"phase"` // this could be represented with an enum
 	Frozen              bool   `json:"frozen"`
 	DurationSeconds     int    `json:"durationSeconds"`
 	StartTimeSeconds    int    `json:"startTimeSeconds"`

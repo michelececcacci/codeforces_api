@@ -499,3 +499,63 @@ func TestComments(t *testing.T) {
 	}
 	assert.Equal(t, (*resp)[0], firstComment)
 }
+
+func TestList(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, err := w.Write([]byte(`{
+		"status": "OK",
+		"result": [
+			{
+			"id": 1794,
+			"name": "Codeforces Round (Div. 2)",
+			"type": "CF",
+			"phase": "BEFORE",
+			"frozen": false,
+			"durationSeconds": 7200,
+			"startTimeSeconds": 1677951300,
+			"relativeTimeSeconds": -2275278
+			},
+			{
+			"id": 1796,
+			"name": "Educational Codeforces Round 144 (Rated for Div. 2)",
+			"type": "ICPC",
+			"phase": "BEFORE",
+			"frozen": false,
+			"durationSeconds": 7200,
+			"startTimeSeconds": 1677508500,
+			"relativeTimeSeconds": -1832478
+			}
+		]}`))
+		assert.Nil(t, err)
+	}))
+	defer ts.Close()
+	c := newDefaultClientWrapper(ts.URL+"/", "", "")
+	cs := contestService{c}
+	resp, err := cs.List(false)
+	assert.NotNil(t, resp)
+	assert.Nil(t, err)
+	assert.Len(t, *resp, 2)
+	first := Contest{
+		ID:                  1794,
+		Name:                "Codeforces Round (Div. 2)",
+		Type:                "CF",
+		Phase:               "BEFORE",
+		Frozen:              false,
+		DurationSeconds:     7200,
+		StartTimeSeconds:    1677951300,
+		RelativeTimeSeconds: -2275278,
+	}
+	second := Contest{
+		ID:                  1796,
+		Name:                "Educational Codeforces Round 144 (Rated for Div. 2)",
+		Type:                "ICPC",
+		Phase:               "BEFORE",
+		Frozen:              false,
+		DurationSeconds:     7200,
+		StartTimeSeconds:    1677508500,
+		RelativeTimeSeconds: -1832478,
+	}
+	assert.Equal(t, first, (*resp)[0])
+	assert.Equal(t, second, (*resp)[1])
+}
