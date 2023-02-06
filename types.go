@@ -41,6 +41,32 @@ type User struct {
 	MaxRank                 string `json:"maxRank"`
 }
 
+func (u *User) IsRated() bool {
+	return u.Rating != 0
+}
+
+func divisionByRating(rating int) uint {
+	if rating < 1400 {
+		return 4
+	} else if rating < 1600 {
+		return 3
+	} else if rating < 2100 {
+		return 2
+	}
+	return 1
+}
+
+// supposed to be called only on rated users
+func (u *User) CurrentDivision() uint {
+	return divisionByRating(u.Rating)
+}
+
+// supposed to be called only on rated users
+// returns the best division the user reached
+func (u *User) MaxDivision() uint {
+	return divisionByRating(u.MaxRating)
+}
+
 type BlogEntry struct {
 	OriginalLocale          string   `json:"originalLocale"`
 	AllowViewHistory        bool     `json:"allowViewHistory"`
