@@ -5,10 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 )
 
-func UnmarshalToResultWrapper[T any](rw *ResultWrapper[T], reader io.Reader) error {
+func unmarshalToResultWrapper[T any](rw *ResultWrapper[T], reader io.Reader) error {
 	body, err := io.ReadAll(reader)
 	if err != nil {
 		return err
@@ -20,7 +21,7 @@ func UnmarshalToResultWrapper[T any](rw *ResultWrapper[T], reader io.Reader) err
 	return nil
 }
 
-func HandleResponseStatusCode(resp *http.Response, err error) error {
+func handleResponseStatusCode(resp *http.Response, err error) error {
 	if err != nil {
 		return err
 	}
@@ -28,4 +29,9 @@ func HandleResponseStatusCode(resp *http.Response, err error) error {
 		return errors.New(fmt.Sprint(resp.StatusCode))
 	}
 	return nil
+}
+
+// non inclusive integer in range
+func randomInRange(min, max int) int {
+	return min+ rand.Intn(max-min)
 }

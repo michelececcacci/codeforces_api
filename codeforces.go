@@ -68,9 +68,10 @@ func (c *httpClientWrapper) Get(suffix string, userParams map[string]string) (*h
 	t := fmt.Sprint(time.Now().UTC().UnixMilli() / 1000)
 	params.Add("time", t)
 	oldParams := params.Encode()
-	text := ("123456/" + suffix + "?" + oldParams + "#" + c.apiSecret)
+	randomPrefix := fmt.Sprint(randomInRange(1e5, 1e6))
+	text := (randomPrefix + "/" + suffix + "?" + oldParams + "#" + c.apiSecret)
 	hash := sha512.Sum512([]byte(text))
-	params.Add("apiSig", `123456`+fmt.Sprintf("%x", hash)) // TODO CONVERT TO RANDOM
+	params.Add("apiSig", randomPrefix +fmt.Sprintf("%x", hash)) 
 	base.RawQuery = params.Encode()
 	resp, err := c.client.Get(base.String())
 	return resp, err
@@ -88,12 +89,12 @@ type problemService service
 func (s *blogService) Comments(id uint) (*[]Comment, error) {
 	params := map[string]string{"blogEntryId": fmt.Sprint(id)}
 	resp, err := s.client.Get("blogEntry.comments", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[[]Comment]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -103,12 +104,12 @@ func (s *blogService) Comments(id uint) (*[]Comment, error) {
 func (s *blogService) EntryById(id uint) (*BlogEntry, error) {
 	params := map[string]string{"blogEntryId": fmt.Sprint(id)}
 	resp, err := s.client.Get("blogEntry.view", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[BlogEntry]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -118,12 +119,12 @@ func (s *blogService) EntryById(id uint) (*BlogEntry, error) {
 func (s *contestService) Hacks(id uint) (*ContestHack, error) {
 	params := map[string]string{"contestId": fmt.Sprint(id)}
 	resp, err := s.client.Get("contest.hacks", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[ContestHack]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -133,12 +134,12 @@ func (s *contestService) Hacks(id uint) (*ContestHack, error) {
 func (s *contestService) List(gym bool) (*[]Contest, error) {
 	params := map[string]string{"gym": fmt.Sprint(gym)}
 	resp, err := s.client.Get("contest.list", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[[]Contest]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -147,13 +148,13 @@ func (s *contestService) List(gym bool) (*[]Contest, error) {
 
 func (s *userService) Info(users []string) (*[]User, error) {
 	params := map[string]string{"handles": strings.Join(users, ";")}
-	resp, err := s.client.Get("info", params)
-	err = HandleResponseStatusCode(resp, err)
+	resp, err := s.client.Get("user.info", params)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[[]User]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -163,12 +164,12 @@ func (s *userService) Info(users []string) (*[]User, error) {
 func (s *userService) Rating(user string) (*[]RatingChange, error) {
 	params := map[string]string{"handle": user}
 	resp, err := s.client.Get("user.rating", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[[]RatingChange]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -185,12 +186,12 @@ func (s *contestService) Standings(contestId, from, count uint, handles []string
 		"room":       fmt.Sprint(room),
 		"unofficial": fmt.Sprint(unofficial)}
 	resp, err := s.client.Get("contest.standings", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[ContestStandings]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -204,12 +205,12 @@ func (s *contestService) Status(contestId, from, count uint, handle string) (*[]
 		"count":     fmt.Sprint(count),
 		"handle":    handle}
 	resp, err := s.client.Get("contest.status", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[[]ContestStatus]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -220,12 +221,12 @@ func (s *contestService) Status(contestId, from, count uint, handle string) (*[]
 func (s *problemService) Problemset(tags []string) (*Problemset, error) {
 	params := map[string]string{"tags": strings.Join(tags, ";")}
 	resp, err := s.client.Get("problemset.problems", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[Problemset]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -236,12 +237,12 @@ func (s *problemService) Problemset(tags []string) (*Problemset, error) {
 func (s *userService) Friends(onlyOnline bool) (*[]string, error) {
 	params := map[string]string{"onlyOnline": fmt.Sprint(onlyOnline)}
 	resp, err := s.client.Get("user.friends", params)
-	err = HandleResponseStatusCode(resp, err)
+	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
 	var rw = ResultWrapper[[]string]{}
-	err = UnmarshalToResultWrapper(&rw, resp.Body)
+	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
 	}
