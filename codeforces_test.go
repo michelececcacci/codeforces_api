@@ -446,6 +446,8 @@ func TestProblemSet(t *testing.T) {
 		Tags:      tags,
 	}
 	// we don't really care about order of tags, so we can just sort both
+	//  assert.ElementsMatch does the job, but this approach allows to directly
+	// compare structs. 
 	assert.NotNil(t, resp)
 	assert.Nil(t, err)
 	sort.Strings(tags)
@@ -558,4 +560,106 @@ func TestList(t *testing.T) {
 	}
 	assert.Equal(t, first, (*resp)[0])
 	assert.Equal(t, second, (*resp)[1])
+}
+
+// Only tests parsing of a well-formed request, apiSig verification is left to integration 
+func TestFriends(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte(`{
+			"status": "OK",
+			"result": [
+				"tourist",
+				"benq"
+			]
+		}`))
+	}))
+	defer ts.Close()
+	c := newDefaultClientWrapper(ts.URL + "/", "", "") 
+	us := userService{c}
+	resp, err := us.Friends(false)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Equal(t, *resp, []string{"tourist", "benq"})
+}
+
+func TestStandings(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r* http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte(`{
+  "status": "OK",
+  "result": {
+    "contest": {
+      "id": 566,
+      "name": "VK Cup 2015 - Finals, online mirror",
+      "type": "CF",
+      "phase": "FINISHED",
+      "frozen": false,
+      "durationSeconds": 10800,
+      "startTimeSeconds": 1438273200,
+      "relativeTimeSeconds": 237585065
+    },
+    "problems": [
+      {
+        "contestId": 566,
+        "index": "A",
+        "name": "Matching Names",
+        "type": "PROGRAMMING",
+        "points": 1750,
+        "rating": 2300,
+        "tags": [
+          "dfs and similar",
+          "strings",
+          "trees"
+        ]
+      },
+      {
+        "contestId": 566,
+        "index": "B",
+        "name": "Replicating Processes",
+        "type": "PROGRAMMING",
+        "points": 2500,
+        "rating": 2600,
+        "tags": [
+          "constructive algorithms",
+          "greedy"
+        ]
+      }
+    ],
+    "rows": [
+      {
+        "party": {
+          "contestId": 566,
+          "members": [
+            {
+              "handle": "maroonrk"
+            }
+          ],
+          "participantType": "VIRTUAL",
+          "ghost": false,
+          "startTimeSeconds": 1621605600
+        },
+        "rank": 1,
+        "points": 8238,
+        "penalty": 0,
+        "successfulHackCount": 0,
+        "unsuccessfulHackCount": 0,
+        "problemResults": [
+         {
+            "points": 446,
+            "rejectedAttemptCount": 0,
+            "type": "FINAL",
+            "bestSubmissionTimeSeconds": 1665
+          },
+          {
+            "points": 1830,
+            "rejectedAttemptCount": 2,
+            "type": "FINAL",
+            "bestSubmissionTimeSeconds": 3445
+          }
+        ]
+    }]
+  }
+}`))
+	}))
 }
