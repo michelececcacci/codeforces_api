@@ -71,7 +71,7 @@ func (c *httpClientWrapper) Get(suffix string, userParams map[string]string) (*h
 	randomPrefix := fmt.Sprint(randomInRange(1e5, 1e6))
 	text := (randomPrefix + "/" + suffix + "?" + oldParams + "#" + c.apiSecret)
 	hash := sha512.Sum512([]byte(text))
-	params.Add("apiSig", randomPrefix +fmt.Sprintf("%x", hash)) 
+	params.Add("apiSig", randomPrefix+fmt.Sprintf("%x", hash))
 	base.RawQuery = params.Encode()
 	resp, err := c.client.Get(base.String())
 	return resp, err
@@ -176,7 +176,6 @@ func (s *userService) Rating(user string) (*[]RatingChange, error) {
 	return &rw.Result, nil
 }
 
-// TODO TEST
 func (s *contestService) Standings(contestId, from, count uint, handles []string, room, unofficial bool) (*ContestStandings, error) {
 	params := map[string]string{
 		"contestId":  fmt.Sprint(contestId),

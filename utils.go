@@ -33,5 +33,5 @@ func handleResponseStatusCode(resp *http.Response, err error) error {
 
 // non inclusive integer in range
 func randomInRange(min, max int) int {
-	return min+ rand.Intn(max-min)
+	return min + rand.Intn(max-min)
 }

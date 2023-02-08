@@ -446,6 +446,8 @@ func TestProblemSet(t *testing.T) {
 		Tags:      tags,
 	}
 	// we don't really care about order of tags, so we can just sort both
+	//  assert.ElementsMatch does the job, but this approach allows to directly
+	// compare structs.
 	assert.NotNil(t, resp)
 	assert.Nil(t, err)
 	sort.Strings(tags)
@@ -558,4 +560,93 @@ func TestList(t *testing.T) {
 	}
 	assert.Equal(t, first, (*resp)[0])
 	assert.Equal(t, second, (*resp)[1])
+}
+
+// Only tests parsing of a well-formed request, apiSig verification is left to integration
+func TestFriends(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, err := w.Write([]byte(`{
+			"status": "OK",
+			"result": [
+				"tourist",
+				"benq"
+			]
+		}`))
+		assert.Nil(t, err)
+	}))
+	defer ts.Close()
+	c := newDefaultClientWrapper(ts.URL+"/", "", "")
+	us := userService{c}
+	resp, err := us.Friends(false)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Equal(t, *resp, []string{"tourist", "benq"})
+}
+
+func TestStandingsEmptyRows(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, err := w.Write([]byte(`{
+			"status": "OK",
+			"result": {
+				"contest": {
+				"id": 566,
+				"name": "VK Cup 2015 - Finals, online mirror",
+				"type": "CF",
+				"phase": "FINISHED",
+				"frozen": false,
+				"durationSeconds": 10800,
+				"startTimeSeconds": 1438273200,
+				"relativeTimeSeconds": 237592464
+				},
+				"problems": [
+					{
+						"contestId": 566,
+						"index": "A",
+						"name": "Matching Names",
+						"type": "PROGRAMMING",
+						"points": 1750,
+						"rating": 2300,
+						"tags": [
+						"dfs and similar",
+						"strings",
+						"trees"
+						]
+					},
+					{
+						"contestId": 566,
+						"index": "B",
+						"name": "Replicating Processes",
+						"type": "PROGRAMMING",
+						"points": 2500,
+						"rating": 2600,
+						"tags": [
+						"constructive algorithms",
+						"greedy"
+						]
+					}
+				],
+				"rows": []
+			}
+		}`))
+		assert.Nil(t, err)
+	}))
+	defer ts.Close()
+	c := newDefaultClientWrapper(ts.URL+"/", "", "")
+	cs := contestService{c}
+	contest := Contest{
+		ID:                  566,
+		Name:                "VK Cup 2015 - Finals, online mirror",
+		Type:                "CF",
+		Phase:               "FINISHED",
+		Frozen:              false,
+		DurationSeconds:     10800,
+		StartTimeSeconds:    1438273200,
+		RelativeTimeSeconds: 237592464,
+	}
+	resp, err := cs.Standings(566, 1, 2, []string{}, false, false)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Equal(t, contest, resp.Contest)
 }
