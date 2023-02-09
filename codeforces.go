@@ -24,6 +24,7 @@ type Client struct {
 	User     *userService
 	Contest  *contestService
 	Problems *problemService
+	Actions  *actionsService
 }
 
 func NewClient(apiKey, apiSecret string) *Client {
@@ -36,6 +37,7 @@ func NewCustomClient(apiKey, apiSecret string, c *httpClientWrapper) *Client {
 		Blog:    &blogService{c},
 		User:    &userService{c},
 		Contest: &contestService{c},
+		Actions: &actionsService{c},
 	}
 }
 
@@ -81,10 +83,13 @@ type service struct {
 	client *httpClientWrapper
 }
 
-type blogService service
-type userService service
-type contestService service
-type problemService service
+type (
+	blogService    service
+	userService    service
+	contestService service
+	problemService service
+	actionsService service
+)
 
 func (s *blogService) Comments(id uint) (*[]Comment, error) {
 	params := map[string]string{"blogEntryId": fmt.Sprint(id)}
@@ -93,7 +98,7 @@ func (s *blogService) Comments(id uint) (*[]Comment, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[[]Comment]{}
+	rw := ResultWrapper[[]Comment]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -108,7 +113,7 @@ func (s *blogService) EntryById(id uint) (*BlogEntry, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[BlogEntry]{}
+	rw := ResultWrapper[BlogEntry]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -123,7 +128,7 @@ func (s *contestService) Hacks(id uint) (*ContestHack, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[ContestHack]{}
+	rw := ResultWrapper[ContestHack]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -138,7 +143,7 @@ func (s *contestService) List(gym bool) (*[]Contest, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[[]Contest]{}
+	rw := ResultWrapper[[]Contest]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -153,7 +158,7 @@ func (s *userService) Info(users []string) (*[]User, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[[]User]{}
+	rw := ResultWrapper[[]User]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -168,7 +173,7 @@ func (s *userService) Rating(user string) (*[]RatingChange, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[[]RatingChange]{}
+	rw := ResultWrapper[[]RatingChange]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -183,13 +188,14 @@ func (s *contestService) Standings(contestId, from, count uint, handles []string
 		"count":      fmt.Sprint(count),
 		"handles":    strings.Join(handles, ";"),
 		"room":       fmt.Sprint(room),
-		"unofficial": fmt.Sprint(unofficial)}
+		"unofficial": fmt.Sprint(unofficial),
+	}
 	resp, err := s.client.Get("contest.standings", params)
 	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[ContestStandings]{}
+	rw := ResultWrapper[ContestStandings]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -202,13 +208,14 @@ func (s *contestService) Status(contestId, from, count uint, handle string) (*[]
 		"contestId": fmt.Sprint(contestId),
 		"from":      fmt.Sprint(from),
 		"count":     fmt.Sprint(count),
-		"handle":    handle}
+		"handle":    handle,
+	}
 	resp, err := s.client.Get("contest.status", params)
 	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[[]ContestStatus]{}
+	rw := ResultWrapper[[]ContestStatus]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -224,7 +231,26 @@ func (s *problemService) Problemset(tags []string) (*Problemset, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[Problemset]{}
+	rw := ResultWrapper[Problemset]{}
+	err = unmarshalToResultWrapper(&rw, resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return &rw.Result, nil
+}
+
+// Maximum count can be up to 100
+func (s *actionsService) RecentActions(count uint) (*[]RecentAction, error) {
+	if count > 100 {
+		return nil, fmt.Errorf("Count is greater than 100")
+	}
+	params := map[string]string{"maxCount": fmt.Sprint(count)}
+	resp, err := s.client.Get("recentActions", params)
+	err = handleResponseStatusCode(resp, err)
+	if err != nil {
+		return nil, err
+	}
+	rw := ResultWrapper[[]RecentAction]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err
@@ -240,7 +266,7 @@ func (s *userService) Friends(onlyOnline bool) (*[]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	var rw = ResultWrapper[[]string]{}
+	rw := ResultWrapper[[]string]{}
 	err = unmarshalToResultWrapper(&rw, resp.Body)
 	if err != nil {
 		return nil, err

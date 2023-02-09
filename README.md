@@ -1,8 +1,8 @@
-Codeforces
+# Codeforces 
 
 [![Unit tests](https://github.com/michelececcacci/codeforces/actions/workflows/test.yml/badge.svg)](https://github.com/michelececcacci/codeforces/actions/workflows/test.yml)
 
-A simple library that allows users to connect with the codeforces api. It already implements several methods, such as 
+A module that allows users to connect with the codeforces api. It already implements several methods, such as 
 ```
 blogEntry.view
 contest.hacks

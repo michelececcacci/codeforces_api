@@ -22,11 +22,15 @@ func (suite *IntegrationSuite) SetupTest() {
 	apiSecret := os.Getenv("CF_API_SECRET")
 	if apiKey == "" {
 		suite.T().Logf(emptyVariableMessage, "apiKey")
-		}
+	}
 	if apiSecret == "" {
 		suite.T().Logf(emptyVariableMessage, "apiSecret")
 	}
 	suite.c = *NewClient(apiKey, apiSecret)
+}
+
+func TestIntegration(t *testing.T) {
+	suite.Run(t, new(IntegrationSuite))
 }
 
 func (suite *IntegrationSuite) TestInfo() {
@@ -48,10 +52,6 @@ func (suite *IntegrationSuite) TestHacks() {
 	resp, err := suite.c.Contest.Hacks(566)
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), resp)
-}
-
-func TestIntegration(t *testing.T) {
-	suite.Run(t, new(IntegrationSuite))
 }
 
 func (suite *IntegrationSuite) TestEntryByID() {

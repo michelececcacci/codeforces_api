@@ -207,3 +207,9 @@ type Comment struct {
 	Rating              int    `json:"rating"`
 	ParentCommentID     int    `json:"parentCommentId,omitempty"`
 }
+
+type RecentAction struct {
+	TimeSeconds int       `json:"timeSeconds"`
+	BlogEntry   BlogEntry `json:"blogEntry"`
+	Comment     Comment   `json:"comment"`
+}

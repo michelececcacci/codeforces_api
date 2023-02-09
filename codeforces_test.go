@@ -177,7 +177,8 @@ func TestHacks(t *testing.T) {
 		ParticipantType:  "CONTESTANT",
 		Ghost:            false,
 		Room:             29,
-		StartTimeSeconds: 1438273200}
+		StartTimeSeconds: 1438273200,
+	}
 
 	assert.Len(t, *(resp), 2)
 	assert.Nil(t, err)
@@ -435,7 +436,8 @@ func TestProblemSet(t *testing.T) {
 		"math",
 		"number theory",
 		"brute force",
-		"sortings"}
+		"sortings",
+	}
 	resp, err := ps.Problemset(tags)
 	problem := Problem{
 		ContestID: 1535,
@@ -649,4 +651,68 @@ func TestStandingsEmptyRows(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, contest, resp.Contest)
+}
+
+func TestRecentActionsValid(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, err := w.Write([]byte(`{
+			"status": "OK",
+			"result": [
+				{
+				"timeSeconds": 1675953521,
+				"blogEntry": {
+					"originalLocale": "en",
+					"allowViewHistory": true,
+					"creationTimeSeconds": 1675953521,
+					"rating": 1,
+					"authorHandle": "suncup224",
+					"modificationTimeSeconds": 1675953521,
+					"id": 112576,
+					"title": "<p>What will happen to Google Code Jam this year?</p>",
+					"locale": "en",
+					"tags": []
+					}
+				},
+				{
+				"timeSeconds": 1675953220,
+				"blogEntry": {
+					"originalLocale": "en",
+					"allowViewHistory": true,
+					"creationTimeSeconds": 1675616756,
+					"rating": 13,
+					"authorHandle": "DottedCalculator",
+					"modificationTimeSeconds": 1675787643,
+					"id": 112398,
+					"title": "<p>Ask me Anything</p>",
+					"locale": "en",
+					"tags": []
+				},
+				"comment": {
+					"id": 1002527,
+					"creationTimeSeconds": 1675953220,
+					"commentatorHandle": "AnkitMajee",
+					"locale": "en",
+					"text": "<div class=\"ttypography\"><p>What resources (all resources i.e playlist,lectures,book,your college, laptop, code editor etc) you follow for coding do share with us </p></div>",
+					"rating": 0
+					}
+				}
+			]}`))
+		assert.Nil(t, err)
+	}))
+	defer ts.Close()
+	c := newDefaultClientWrapper(ts.URL+"/", "", "")
+	as := actionsService{c}
+	resp, err := as.RecentActions(2)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Len(t, *resp, 2)
+}
+
+func TestRecentActionsInvalidCount(t *testing.T) {
+	c := newDefaultClientWrapper("", "", "")
+	as := actionsService{c}
+	resp, err := as.RecentActions(200)
+	assert.NotNil(t, err)
+	assert.Nil(t, resp)
 }
