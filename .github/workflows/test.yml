@@ -20,6 +20,13 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.19
+      env:
+        CF_API_KEY: ${{ secrets.CF_API_KEY }}
+        CF_API_SECRET: ${{ secrets.CF_API_SECRET }}
+
+    -name: "Set environment variables"
+      run:
+        export CF_API_KEY=$CF_API_KEY && export CF_API_SECRET=$CF_API_SECRET
 
     - name: Build
       run: go build -v ./...
