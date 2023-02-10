@@ -94,91 +94,44 @@ type (
 func (s *blogService) Comments(id uint) (*[]Comment, error) {
 	params := map[string]string{"blogEntryId": fmt.Sprint(id)}
 	resp, err := s.client.Get("blogEntry.comments", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[[]Comment]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[[]Comment](resp, err)
 }
 
 func (s *blogService) EntryById(id uint) (*BlogEntry, error) {
 	params := map[string]string{"blogEntryId": fmt.Sprint(id)}
 	resp, err := s.client.Get("blogEntry.view", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[BlogEntry]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[BlogEntry](resp, err)
 }
 
 func (s *contestService) Hacks(id uint) (*ContestHack, error) {
 	params := map[string]string{"contestId": fmt.Sprint(id)}
 	resp, err := s.client.Get("contest.hacks", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[ContestHack]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[ContestHack](resp, err)
+}
+
+func (s *contestService) RatingChange(id uint) (*[]RatingChange, error) {
+	params := map[string]string{"contestId": fmt.Sprint(id)}
+	resp, err := s.client.Get("contest.ratingChanges", params)
+	return serializeResponse[[]RatingChange](resp, err)
 }
 
 func (s *contestService) List(gym bool) (*[]Contest, error) {
 	params := map[string]string{"gym": fmt.Sprint(gym)}
 	resp, err := s.client.Get("contest.list", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[[]Contest]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, err
+	return serializeResponse[[]Contest](resp, err)
 }
 
 func (s *userService) Info(users []string) (*[]User, error) {
 	params := map[string]string{"handles": strings.Join(users, ";")}
 	resp, err := s.client.Get("user.info", params)
 	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[[]User]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[[]User](resp, err)
 }
 
 func (s *userService) Rating(user string) (*[]RatingChange, error) {
 	params := map[string]string{"handle": user}
 	resp, err := s.client.Get("user.rating", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[[]RatingChange]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[[]RatingChange](resp, err)
 }
 
 func (s *contestService) Standings(contestId, from, count uint, handles []string, room, unofficial bool) (*ContestStandings, error) {
@@ -191,16 +144,7 @@ func (s *contestService) Standings(contestId, from, count uint, handles []string
 		"unofficial": fmt.Sprint(unofficial),
 	}
 	resp, err := s.client.Get("contest.standings", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[ContestStandings]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[ContestStandings](resp, err)
 }
 
 func (s *contestService) Status(contestId, from, count uint, handle string) (*[]ContestStatus, error) {
@@ -211,32 +155,14 @@ func (s *contestService) Status(contestId, from, count uint, handle string) (*[]
 		"handle":    handle,
 	}
 	resp, err := s.client.Get("contest.status", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[[]ContestStatus]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[[]ContestStatus](resp, err)
 }
 
 // tags can also be empty (will return every problem in the problemset)
 func (s *problemService) Problemset(tags []string) (*Problemset, error) {
 	params := map[string]string{"tags": strings.Join(tags, ";")}
 	resp, err := s.client.Get("problemset.problems", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[Problemset]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[Problemset](resp, err)
 }
 
 // Maximum count can be up to 100
@@ -246,30 +172,12 @@ func (s *actionsService) RecentActions(count uint) (*[]RecentAction, error) {
 	}
 	params := map[string]string{"maxCount": fmt.Sprint(count)}
 	resp, err := s.client.Get("recentActions", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[[]RecentAction]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[[]RecentAction](resp, err)
 }
 
 // Requires authentication
 func (s *userService) Friends(onlyOnline bool) (*[]string, error) {
 	params := map[string]string{"onlyOnline": fmt.Sprint(onlyOnline)}
 	resp, err := s.client.Get("user.friends", params)
-	err = handleResponseStatusCode(resp, err)
-	if err != nil {
-		return nil, err
-	}
-	rw := ResultWrapper[[]string]{}
-	err = unmarshalToResultWrapper(&rw, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &rw.Result, nil
+	return serializeResponse[[]string](resp, err)
 }
