@@ -31,7 +31,7 @@ func handleResponseStatusCode(resp *http.Response, err error) error {
 	return nil
 }
 
-func serializeResponse[T any](resp *http.Response, err error) (*T, error){
+func serializeResponse[T any](resp *http.Response, err error) (*T, error) {
 	err = handleResponseStatusCode(resp, err)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,6 @@ func serializeResponse[T any](resp *http.Response, err error) (*T, error){
 		return nil, err
 	}
 	return &rw.Result, nil
-
 }
 
 // non inclusive integer in range
