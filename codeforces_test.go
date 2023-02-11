@@ -716,3 +716,59 @@ func TestRecentActionsInvalidCount(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Nil(t, resp)
 }
+
+func TestRatingChange(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		_, err := w.Write([]byte(`{
+				"status": "OK",
+				"result": [
+				{
+					"contestId": 566,
+					"contestName": "VK Cup 2015 - Finals, online mirror",
+					"handle": "rng_58",
+					"rank": 1,
+					"ratingUpdateTimeSeconds": 1438284000,
+					"oldRating": 2849,
+					"newRating": 2941
+				},
+				{
+					"contestId": 566,
+					"contestName": "VK Cup 2015 - Finals, online mirror",
+					"handle": "ngfam_kongu",
+					"rank": 2,
+					"ratingUpdateTimeSeconds": 1438284000,
+					"oldRating": 2294,
+					"newRating": 2383
+				}]
+		}`))
+		assert.Nil(t, err)
+	}))
+	defer ts.Close()
+	first := RatingChange{
+		ContestID:               566,
+		ContestName:             "VK Cup 2015 - Finals, online mirror",
+		Handle:                  "rng_58",
+		Rank:                    1,
+		RatingUpdateTimeSeconds: 1438284000,
+		OldRating:               2849,
+		NewRating:               2941,
+	}
+	second := RatingChange{
+		ContestID:               566,
+		ContestName:             "VK Cup 2015 - Finals, online mirror",
+		Handle:                  "ngfam_kongu",
+		Rank:                    2,
+		RatingUpdateTimeSeconds: 1438284000,
+		OldRating:               2294,
+		NewRating:               2383,
+	}
+	c := newDefaultClientWrapper(ts.URL+"/", "", "")
+	cs := contestService{c}
+	resp, err := cs.RatingChange(566)
+	assert.Nil(t, err)
+	assert.NotNil(t, resp)
+	assert.Len(t, *resp, 2)
+	assert.Equal(t, first, (*resp)[0])
+	assert.Equal(t, second, (*resp)[1])
+}
