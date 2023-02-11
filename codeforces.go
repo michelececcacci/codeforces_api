@@ -134,27 +134,36 @@ func (s *userService) Rating(user string) (*[]RatingChange, error) {
 	return serializeResponse[[]RatingChange](resp, err)
 }
 
-func (s *contestService) Standings(contestId, from, count uint, handles []string, room, unofficial bool) (*ContestStandings, error) {
+func (s *contestService) Standings(contestId, from, count uint, handles []string, unofficial bool) (*ContestStandings, error) {
 	params := map[string]string{
-		"contestId":  fmt.Sprint(contestId),
-		"from":       fmt.Sprint(from),
-		"count":      fmt.Sprint(count),
-		"handles":    strings.Join(handles, ";"),
-		"room":       fmt.Sprint(room),
-		"unofficial": fmt.Sprint(unofficial),
+		"contestId":      fmt.Sprint(contestId),
+		"from":           fmt.Sprint(from),
+		"count":          fmt.Sprint(count),
+		"handles":        strings.Join(handles, ";"),
+		"showUnofficial": fmt.Sprint(unofficial),
 	}
 	resp, err := s.client.Get("contest.standings", params)
 	return serializeResponse[ContestStandings](resp, err)
 }
 
-func (s *contestService) Status(contestId, from, count uint, handle string) (*[]ContestStatus, error) {
+func statusDefaultParams(contestId, from, count uint) *map[string]string {
 	params := map[string]string{
 		"contestId": fmt.Sprint(contestId),
 		"from":      fmt.Sprint(from),
 		"count":     fmt.Sprint(count),
-		"handle":    handle,
 	}
-	resp, err := s.client.Get("contest.status", params)
+	return &params
+}
+
+func (s *contestService) StatusWithHandle(contestId, from, count uint, handle string) (*[]ContestStatus, error) {
+	params := statusDefaultParams(contestId, from, count)
+	(*params)["handle"] = handle
+	resp, err := s.client.Get("contest.status", *params)
+	return serializeResponse[[]ContestStatus](resp, err)
+}
+
+func (s *contestService) Status(contestId, from, count uint) (*[]ContestStatus, error) {
+	resp, err := s.client.Get("contest.status", *statusDefaultParams(contestId, from, count))
 	return serializeResponse[[]ContestStatus](resp, err)
 }
 

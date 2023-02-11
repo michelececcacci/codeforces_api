@@ -9,7 +9,7 @@ import (
 
 func main() {
 	c := codeforces.NewClient("", "")
-	resp, err := c.Contest.Status(566, 1, 2, "cheeto1")
+	resp, err := c.Contest.StatusWithHandle(566, 1, 2, "cheeto1")
 	if err != nil {
 		fmt.Println(err)
 	} else {

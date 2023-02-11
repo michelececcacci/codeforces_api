@@ -336,7 +336,7 @@ func TestRating(t *testing.T) {
 	assert.Equal(t, (*resp)[0], firstResult)
 }
 
-func TestStatus(t *testing.T) {
+func TestStatusWithHandle(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
 		_, err := w.Write([]byte(`{
@@ -385,7 +385,7 @@ func TestStatus(t *testing.T) {
 	defer ts.Close()
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
 	cs := contestService{c}
-	resp, err := cs.Status(566, 1, 2, "tourist")
+	resp, err := cs.StatusWithHandle(566, 1, 2, "tourist")
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Len(t, *resp, 1)
@@ -647,7 +647,7 @@ func TestStandingsEmptyRows(t *testing.T) {
 		StartTimeSeconds:    1438273200,
 		RelativeTimeSeconds: 237592464,
 	}
-	resp, err := cs.Standings(566, 1, 2, []string{}, false, false)
+	resp, err := cs.Standings(566, 1, 2, []string{}, false)
 	assert.Nil(t, err)
 	assert.NotNil(t, resp)
 	assert.Equal(t, contest, resp.Contest)
