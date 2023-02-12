@@ -213,3 +213,8 @@ type RecentAction struct {
 	BlogEntry   BlogEntry `json:"blogEntry"`
 	Comment     Comment   `json:"comment"`
 }
+
+type FailedRequest struct {
+	Status  string `json:"status"`
+	Comment string `json:"comment"`
+}

@@ -22,11 +22,14 @@ func unmarshalToResultWrapper[T any](rw *ResultWrapper[T], reader io.Reader) err
 }
 
 func handleResponseStatusCode(resp *http.Response, err error) error {
-	if err != nil {
-		return err
-	}
 	if resp.StatusCode != 200 {
-		return errors.New(fmt.Sprint(resp.StatusCode))
+		fr := FailedRequest{}
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		json.Unmarshal(body, &fr)
+		return errors.New(fmt.Sprint(resp.StatusCode) + ":" + fr.Comment)
 	}
 	return nil
 }

@@ -772,3 +772,20 @@ func TestRatingChange(t *testing.T) {
 	assert.Equal(t, first, (*resp)[0])
 	assert.Equal(t, second, (*resp)[1])
 }
+
+func TestFailedRequest(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(400)
+		_, err := w.Write([]byte(`{
+			"status":"FAILED",
+			"comment":"Something went wrong"}`))
+		assert.Nil(t, err)
+	}))
+	defer ts.Close()
+	c := newDefaultClientWrapper(ts.URL+"/", "", "")
+	cs := contestService{c}
+	resp, err := cs.RatingChange(566)
+	assert.NotNil(t, err)
+	assert.Nil(t, resp)
+	assert.EqualError(t, err, "400:Something went wrong")
+}
