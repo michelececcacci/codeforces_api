@@ -1,0 +1,28 @@
+{
+    "status": "OK",
+    "result": {
+    "problems": [
+        {
+            "contestId": 1535,
+            "index": "B",
+            "name": "Array Reodering",
+            "type": "PROGRAMMING",
+            "rating": 900,
+            "tags": [
+                "brute force",
+                "greedy",
+                "math",
+                "number theory",
+                "sortings"
+            ]
+        }
+    ],
+    "problemStatistics": [
+        {
+            "contestId": 1535,
+            "index": "B",
+            "solvedCount": 25512
+        }
+    ]
+    }
+}

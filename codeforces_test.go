@@ -3,6 +3,7 @@ package codeforces
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"sort"
 	"testing"
 
@@ -12,25 +13,9 @@ import (
 func TestEntryByIdValid(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`
-		{
-			"status": "OK",
-			"result": {
-				"originalLocale": "ru",
-				"allowViewHistory": false,
-				"creationTimeSeconds": 1267562173,
-				"rating": 14,
-				"authorHandle": "MikeMirzayanov",
-				"modificationTimeSeconds": 1267651613,
-				"id": 123,
-				"title": "Codeforces Maintenance",
-				"locale": "en",
-				"tags": [
-				"codeforces",
-				"maintenance"
-				]
-			}
-		}`))
+		b, err := os.ReadFile("testdata/blog/entry/123.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()
@@ -66,105 +51,9 @@ func TestEntryByIdInvalid(t *testing.T) {
 func TestHacks(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-				"status": "OK",
-				"result": [
-					{
-					"id": 160426,
-					"creationTimeSeconds": 1438274514,
-					"hacker": {
-						"contestId": 566,
-						"members": [
-						{
-							"handle": "Sehnsucht"
-						}
-						],
-						"participantType": "CONTESTANT",
-						"ghost": false,
-						"room": 29,
-						"startTimeSeconds": 1438273200
-					},
-					"defender": {
-						"contestId": 566,
-						"members": [
-						{
-							"handle": "osama"
-						}
-						],
-						"participantType": "CONTESTANT",
-						"ghost": false,
-						"room": 29,
-						"startTimeSeconds": 1438273200
-					},
-					"verdict": "INVALID_INPUT",
-					"problem": {
-						"contestId": 566,
-						"index": "F",
-						"name": "Clique in the Divisibility Graph",
-						"type": "PROGRAMMING",
-						"points": 500.0,
-						"rating": 1500,
-						"tags": [
-						"dp",
-						"math",
-						"number theory"
-						]
-					},
-					"judgeProtocol": {
-						"protocol": "Validator 'validate.exe' returns exit code 3 [FAIL Integer parameter [name=a[1]] equals to 2, violates the range [3, 1000000] (stdin)]",
-						"manual": "false",
-						"verdict": "Invalid input"
-					}
-					},
-					{
-					"id": 160427,
-					"creationTimeSeconds": 1438274878,
-					"hacker": {
-						"contestId": 566,
-						"members": [
-						{
-							"handle": "Misha100896"
-						}
-						],
-						"participantType": "CONTESTANT",
-						"ghost": false,
-						"room": 5,
-						"startTimeSeconds": 1438273200
-					},
-					"defender": {
-						"contestId": 566,
-						"members": [
-						{
-							"handle": "fruwajacybyk"
-						}
-						],
-						"participantType": "CONTESTANT",
-						"ghost": false,
-						"room": 5,
-						"startTimeSeconds": 1438273200
-					},
-					"verdict": "HACK_UNSUCCESSFUL",
-					"problem": {
-						"contestId": 566,
-						"index": "F",
-						"name": "Clique in the Divisibility Graph",
-						"type": "PROGRAMMING",
-						"points": 500.0,
-						"rating": 1500,
-						"tags": [
-						"dp",
-						"math",
-						"number theory"
-						]
-					},
-					"judgeProtocol": {
-						"protocol": "Solution verdict:\nOK\n\nChecker:\nok 1 number(s): \"2\"\r\n\n\nInput:\n2\r\n1 2\r\n\n\nOutput:\n2\r\n\n\nAnswer:\n2\n\n\nTime:\n46\n\nMemory:\n9080832\n",
-						"manual": "false",
-						"verdict": "Unsuccessful hacking attempt"
-					}
-					}
-				]
-		}`))
+		b, err := os.ReadFile("testdata/contest/hacks/hacks.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()
@@ -230,47 +119,9 @@ func TestInfoSingleUser(t *testing.T) {
 func TestInfoMultipleUsers(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-			"status": "OK",
-			"result": [
-				{
-				"lastName": "Korotkevich",
-				"country": "Belarus",
-				"lastOnlineTimeSeconds": 1675068776,
-				"city": "Gomel",
-				"rating": 3803,
-				"friendOfCount": 52618,
-				"titlePhoto": "https://userpic.codeforces.org/422/title/50a270ed4a722867.jpg",
-				"handle": "tourist",
-				"avatar": "https://userpic.codeforces.org/422/avatar/2b5dbe87f0d859a2.jpg",
-				"firstName": "Gennady",
-				"contribution": 147,
-				"organization": "ITMO University",
-				"rank": "legendary grandmaster",
-				"maxRating": 3979,
-				"registrationTimeSeconds": 1265987288,
-				"maxRank": "legendary grandmaster"
-				},
-				{
-				"lastName": "Qi",
-				"country": "United States",
-				"lastOnlineTimeSeconds": 1675044771,
-				"city": "Princeton",
-				"rating": 3783,
-				"friendOfCount": 11172,
-				"titlePhoto": "https://userpic.codeforces.org/312472/title/7cf0a442d4071e87.jpg",
-				"handle": "Benq",
-				"avatar": "https://userpic.codeforces.org/312472/avatar/5716ac69aea8159a.jpg",
-				"firstName": "Benjamin",
-				"contribution": 50,
-				"organization": "MIT",
-				"rank": "legendary grandmaster",
-				"maxRating": 3813,
-				"registrationTimeSeconds": 1435099979,
-				"maxRank": "legendary grandmaster"
-				}
-			]
-		}`))
+		b, err := os.ReadFile("testdata/user/info/multipleusers.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()
@@ -339,47 +190,9 @@ func TestRating(t *testing.T) {
 func TestStatusWithHandle(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-			"status": "OK",
-			"result": [
-				{
-				"id": 12291750,
-				"contestId": 566,
-				"creationTimeSeconds": 1438347312,
-				"relativeTimeSeconds": 2147483647,
-				"problem": {
-					"contestId": 566,
-					"index": "A",
-					"name": "Matching Names",
-					"type": "PROGRAMMING",
-					"points": 1750,
-					"rating": 2300,
-					"tags": [
-					"dfs and similar",
-					"strings",
-					"trees"
-					]
-				},
-				"author": {
-					"contestId": 566,
-					"members": [
-					{
-						"handle": "tourist"
-					}
-					],
-					"participantType": "PRACTICE",
-					"ghost": false,
-					"startTimeSeconds": 1438273200
-				},
-				"programmingLanguage": "GNU C++11",
-				"verdict": "OK",
-				"testset": "TESTS",
-				"passedTestCount": 38,
-				"timeConsumedMillis": 171,
-				"memoryConsumedBytes": 29388800
-				}
-			]
-		}`))
+		b, err := os.ReadFile("testdata/contest/statuswithhandle/touriststatus.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()
@@ -399,34 +212,9 @@ func TestStatusWithHandle(t *testing.T) {
 func TestProblemSet(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-			"status": "OK",
-			"result": {
-				"problems": [
-				{
-					"contestId": 1535,
-					"index": "B",
-					"name": "Array Reodering",
-					"type": "PROGRAMMING",
-					"rating": 900,
-					"tags": [
-					"brute force",
-					"greedy",
-					"math",
-					"number theory",
-					"sortings"
-					]
-				}
-				],
-				"problemStatistics": [
-				{
-					"contestId": 1535,
-					"index": "B",
-					"solvedCount": 25512
-				}
-				]
-			}
-		}`))
+		b, err := os.ReadFile("testdata/problems/problemset/problemset.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
@@ -589,49 +377,9 @@ func TestFriends(t *testing.T) {
 func TestStandingsEmptyRows(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-			"status": "OK",
-			"result": {
-				"contest": {
-				"id": 566,
-				"name": "VK Cup 2015 - Finals, online mirror",
-				"type": "CF",
-				"phase": "FINISHED",
-				"frozen": false,
-				"durationSeconds": 10800,
-				"startTimeSeconds": 1438273200,
-				"relativeTimeSeconds": 237592464
-				},
-				"problems": [
-					{
-						"contestId": 566,
-						"index": "A",
-						"name": "Matching Names",
-						"type": "PROGRAMMING",
-						"points": 1750,
-						"rating": 2300,
-						"tags": [
-						"dfs and similar",
-						"strings",
-						"trees"
-						]
-					},
-					{
-						"contestId": 566,
-						"index": "B",
-						"name": "Replicating Processes",
-						"type": "PROGRAMMING",
-						"points": 2500,
-						"rating": 2600,
-						"tags": [
-						"constructive algorithms",
-						"greedy"
-						]
-					}
-				],
-				"rows": []
-			}
-		}`))
+		b, err := os.ReadFile("testdata/contest/standings/emptyrows.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()
@@ -656,48 +404,9 @@ func TestStandingsEmptyRows(t *testing.T) {
 func TestRecentActionsValid(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-			"status": "OK",
-			"result": [
-				{
-				"timeSeconds": 1675953521,
-				"blogEntry": {
-					"originalLocale": "en",
-					"allowViewHistory": true,
-					"creationTimeSeconds": 1675953521,
-					"rating": 1,
-					"authorHandle": "suncup224",
-					"modificationTimeSeconds": 1675953521,
-					"id": 112576,
-					"title": "<p>What will happen to Google Code Jam this year?</p>",
-					"locale": "en",
-					"tags": []
-					}
-				},
-				{
-				"timeSeconds": 1675953220,
-				"blogEntry": {
-					"originalLocale": "en",
-					"allowViewHistory": true,
-					"creationTimeSeconds": 1675616756,
-					"rating": 13,
-					"authorHandle": "DottedCalculator",
-					"modificationTimeSeconds": 1675787643,
-					"id": 112398,
-					"title": "<p>Ask me Anything</p>",
-					"locale": "en",
-					"tags": []
-				},
-				"comment": {
-					"id": 1002527,
-					"creationTimeSeconds": 1675953220,
-					"commentatorHandle": "AnkitMajee",
-					"locale": "en",
-					"text": "<div class=\"ttypography\"><p>What resources (all resources i.e playlist,lectures,book,your college, laptop, code editor etc) you follow for coding do share with us </p></div>",
-					"rating": 0
-					}
-				}
-			]}`))
+		b, err := os.ReadFile("testdata/actions/recentactions.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()

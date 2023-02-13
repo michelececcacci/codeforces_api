@@ -1,0 +1,18 @@
+{
+    "status": "OK",
+    "result": {
+        "originalLocale": "ru",
+        "allowViewHistory": false,
+        "creationTimeSeconds": 1267562173,
+        "rating": 14,
+        "authorHandle": "MikeMirzayanov",
+        "modificationTimeSeconds": 1267651613,
+        "id": 123,
+        "title": "Codeforces Maintenance",
+        "locale": "en",
+        "tags": [
+        "codeforces",
+        "maintenance"
+        ]
+    }
+}

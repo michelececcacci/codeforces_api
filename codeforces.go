@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
 	"time"
 )
 
@@ -122,7 +121,7 @@ func (s *contestService) List(gym bool) (*[]Contest, error) {
 }
 
 func (s *userService) Info(users []string) (*[]User, error) {
-	params := map[string]string{"handles": strings.Join(users, ";")}
+	params := map[string]string{"handles": encodeToParameter(users)}
 	resp, err := s.client.Get("user.info", params)
 	err = handleResponseStatusCode(resp, err)
 	return serializeResponse[[]User](resp, err)
@@ -139,7 +138,7 @@ func (s *contestService) Standings(contestId, from, count uint, handles []string
 		"contestId":      fmt.Sprint(contestId),
 		"from":           fmt.Sprint(from),
 		"count":          fmt.Sprint(count),
-		"handles":        strings.Join(handles, ";"),
+		"handles":        encodeToParameter(handles),
 		"showUnofficial": fmt.Sprint(unofficial),
 	}
 	resp, err := s.client.Get("contest.standings", params)
@@ -169,7 +168,7 @@ func (s *contestService) Status(contestId, from, count uint) (*[]ContestStatus, 
 
 // tags can also be empty (will return every problem in the problemset)
 func (s *problemService) Problemset(tags []string) (*Problemset, error) {
-	params := map[string]string{"tags": strings.Join(tags, ";")}
+	params := map[string]string{"tags": encodeToParameter(tags)}
 	resp, err := s.client.Get("problemset.problems", params)
 	return serializeResponse[Problemset](resp, err)
 }

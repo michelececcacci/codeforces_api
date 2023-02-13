@@ -7,6 +7,7 @@ import (
 	"io"
 	"math/rand"
 	"net/http"
+	"strings"
 )
 
 func unmarshalToResultWrapper[T any](rw *ResultWrapper[T], reader io.Reader) error {
@@ -28,7 +29,10 @@ func handleResponseStatusCode(resp *http.Response, err error) error {
 		if err != nil {
 			return err
 		}
-		json.Unmarshal(body, &fr)
+		err = json.Unmarshal(body, &fr)
+		if err != nil {
+			return err
+		}
 		return errors.New(fmt.Sprint(resp.StatusCode) + ":" + fr.Comment)
 	}
 	return nil
@@ -50,4 +54,8 @@ func serializeResponse[T any](resp *http.Response, err error) (*T, error) {
 // non inclusive integer in range
 func randomInRange(min, max int) int {
 	return min + rand.Intn(max-min)
+}
+
+func encodeToParameter(s []string) string {
+	return strings.Join(s, ";")
 }

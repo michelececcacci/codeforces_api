@@ -1,0 +1,43 @@
+{
+    "status": "OK",
+    "result": {
+    "contest": {
+    "id": 566,
+    "name": "VK Cup 2015 - Finals, online mirror",
+    "type": "CF",
+    "phase": "FINISHED",
+    "frozen": false,
+    "durationSeconds": 10800,
+    "startTimeSeconds": 1438273200,
+    "relativeTimeSeconds": 237592464
+    },
+    "problems": [
+        {
+            "contestId": 566,
+            "index": "A",
+            "name": "Matching Names",
+            "type": "PROGRAMMING",
+            "points": 1750,
+            "rating": 2300,
+            "tags": [
+            "dfs and similar",
+            "strings",
+            "trees"
+            ]
+        },
+        {
+            "contestId": 566,
+            "index": "B",
+            "name": "Replicating Processes",
+            "type": "PROGRAMMING",
+            "points": 2500,
+            "rating": 2600,
+            "tags": [
+            "constructive algorithms",
+            "greedy"
+            ]
+        }
+    ],
+    "rows": []
+}
+}

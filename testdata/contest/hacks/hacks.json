@@ -1,0 +1,99 @@
+{
+    "status": "OK",
+    "result": [
+        {
+        "id": 160426,
+        "creationTimeSeconds": 1438274514,
+        "hacker": {
+            "contestId": 566,
+            "members": [
+            {
+                "handle": "Sehnsucht"
+            }
+            ],
+            "participantType": "CONTESTANT",
+            "ghost": false,
+            "room": 29,
+            "startTimeSeconds": 1438273200
+        },
+        "defender": {
+            "contestId": 566,
+            "members": [
+            {
+                "handle": "osama"
+            }
+            ],
+            "participantType": "CONTESTANT",
+            "ghost": false,
+            "room": 29,
+            "startTimeSeconds": 1438273200
+        },
+        "verdict": "INVALID_INPUT",
+        "problem": {
+            "contestId": 566,
+            "index": "F",
+            "name": "Clique in the Divisibility Graph",
+            "type": "PROGRAMMING",
+            "points": 500.0,
+            "rating": 1500,
+            "tags": [
+            "dp",
+            "math",
+            "number theory"
+            ]
+        },
+        "judgeProtocol": {
+            "protocol": "Validator 'validate.exe' returns exit code 3 [FAIL Integer parameter [name=a[1]] equals to 2, violates the range [3, 1000000] (stdin)]",
+            "manual": "false",
+            "verdict": "Invalid input"
+        }
+        },
+        {
+        "id": 160427,
+        "creationTimeSeconds": 1438274878,
+        "hacker": {
+            "contestId": 566,
+            "members": [
+            {
+                "handle": "Misha100896"
+            }
+            ],
+            "participantType": "CONTESTANT",
+            "ghost": false,
+            "room": 5,
+            "startTimeSeconds": 1438273200
+        },
+        "defender": {
+            "contestId": 566,
+            "members": [
+            {
+                "handle": "fruwajacybyk"
+            }
+            ],
+            "participantType": "CONTESTANT",
+            "ghost": false,
+            "room": 5,
+            "startTimeSeconds": 1438273200
+        },
+        "verdict": "HACK_UNSUCCESSFUL",
+        "problem": {
+            "contestId": 566,
+            "index": "F",
+            "name": "Clique in the Divisibility Graph",
+            "type": "PROGRAMMING",
+            "points": 500.0,
+            "rating": 1500,
+            "tags": [
+            "dp",
+            "math",
+            "number theory"
+            ]
+        },
+        "judgeProtocol": {
+            "protocol": "Solution verdict:\nOK\n\nChecker:\nok 1 number(s): \"2\"\r\n\n\nInput:\n2\r\n1 2\r\n\n\nOutput:\n2\r\n\n\nAnswer:\n2\n\n\nTime:\n46\n\nMemory:\n9080832\n",
+            "manual": "false",
+            "verdict": "Unsuccessful hacking attempt"
+        }
+        }
+    ]
+}

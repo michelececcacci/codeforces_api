@@ -1,0 +1,43 @@
+{			
+    "status": "OK",
+    "result": [
+        {
+        "timeSeconds": 1675953521,
+        "blogEntry": {
+            "originalLocale": "en",
+            "allowViewHistory": true,
+            "creationTimeSeconds": 1675953521,
+            "rating": 1,
+            "authorHandle": "suncup224",
+            "modificationTimeSeconds": 1675953521,
+            "id": 112576,
+            "title": "<p>What will happen to Google Code Jam this year?</p>",
+            "locale": "en",
+            "tags": []
+            }
+        },
+        {
+        "timeSeconds": 1675953220,
+        "blogEntry": {
+            "originalLocale": "en",
+            "allowViewHistory": true,
+            "creationTimeSeconds": 1675616756,
+            "rating": 13,
+            "authorHandle": "DottedCalculator",
+            "modificationTimeSeconds": 1675787643,
+            "id": 112398,
+            "title": "<p>Ask me Anything</p>",
+            "locale": "en",
+            "tags": []
+        },
+        "comment": {
+            "id": 1002527,
+            "creationTimeSeconds": 1675953220,
+            "commentatorHandle": "AnkitMajee",
+            "locale": "en",
+            "text": "<div class=\"ttypography\"><p>What resources (all resources i.e playlist,lectures,book,your college, laptop, code editor etc) you follow for coding do share with us </p></div>",
+            "rating": 0
+            }
+        }
+    ]
+}
