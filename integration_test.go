@@ -1,3 +1,5 @@
+//+build integration
+
 package codeforces
 
 // Currently used to verify the api endpoints are hit.

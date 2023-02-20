@@ -28,8 +28,16 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-    - name: Test and generate coverage
+    - name: Test and generate coverage 
       run: go test . -race -coverprofile=coverage.out -covermode=atomic
+
+    # This is marked optional because if we send too many requests
+    # the API might return a 503. This has to be considered an error in 
+    # actual production code, but the CI shouldn't report fake failures
+    # since it's misleading. 
+    - name: Test and generate coverage (Integration)
+      continue-on-error: true
+      run: go test . -tags=integration -race -coverprofile=coverage.out -covermode=atomic
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
