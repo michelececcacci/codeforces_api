@@ -80,27 +80,9 @@ func TestHacks(t *testing.T) {
 func TestInfoSingleUser(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-			"status":"OK",
-			"result":[
-				{
-					"lastName":"Korotkevich",
-					"country":"Belarus",
-					"lastOnlineTimeSeconds":1675068776,
-					"city":"Gomel",
-					"rating":3803,
-					"friendOfCount":52616,
-					"titlePhoto":"https://userpic.codeforces.org/422/title/50a270ed4a722867.jpg",
-					"handle":"tourist",
-					"avatar":"https://userpic.codeforces.org/422/avatar/2b5dbe87f0d859a2.jpg",
-					"firstName":"Gennady",
-					"contribution":147,
-					"organization":"ITMO University",
-					"rank":"legendary grandmaster",
-					"maxRating":3979,
-					"registrationTimeSeconds":1265987288,
-					"maxRank":"legendary grandmaster"}]
-				}`))
+		b, err := os.ReadFile("testdata/user/info/singleuser.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	c := newDefaultClientWrapper(ts.URL+"/", "", "")
@@ -143,29 +125,9 @@ func TestInfoMultipleUsers(t *testing.T) {
 func TestRating(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-			"status": "OK",
-			"result": [
-				{
-				"contestId": 2,
-				"contestName": "Codeforces Beta Round #2",
-				"handle": "tourist",
-				"rank": 14,
-				"ratingUpdateTimeSeconds": 1267124400,
-				"oldRating": 0,
-				"newRating": 1602
-				},
-				{
-				"contestId": 8,
-				"contestName": "Codeforces Beta Round #8",
-				"handle": "tourist",
-				"rank": 5,
-				"ratingUpdateTimeSeconds": 1270748700,
-				"oldRating": 1602,
-				"newRating": 1764
-				}
-			]
-		}`))
+		b, err := os.ReadFile("testdata/user/rating/userrating.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()
@@ -429,28 +391,9 @@ func TestRecentActionsInvalidCount(t *testing.T) {
 func TestRatingChange(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		_, err := w.Write([]byte(`{
-				"status": "OK",
-				"result": [
-				{
-					"contestId": 566,
-					"contestName": "VK Cup 2015 - Finals, online mirror",
-					"handle": "rng_58",
-					"rank": 1,
-					"ratingUpdateTimeSeconds": 1438284000,
-					"oldRating": 2849,
-					"newRating": 2941
-				},
-				{
-					"contestId": 566,
-					"contestName": "VK Cup 2015 - Finals, online mirror",
-					"handle": "ngfam_kongu",
-					"rank": 2,
-					"ratingUpdateTimeSeconds": 1438284000,
-					"oldRating": 2294,
-					"newRating": 2383
-				}]
-		}`))
+		b, err := os.ReadFile("testdata/contest/ratingchange/ratingchange.json")
+		assert.Nil(t, err)
+		_, err = w.Write(b)
 		assert.Nil(t, err)
 	}))
 	defer ts.Close()

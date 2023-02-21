@@ -3,4 +3,5 @@
     "go.lintFlags": [
     "--fast"
     ],
+    "files.insertFinalNewline": true,
 }

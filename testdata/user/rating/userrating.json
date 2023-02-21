@@ -1,0 +1,23 @@
+{
+    "status": "OK",
+    "result": [
+        {
+        "contestId": 2,
+        "contestName": "Codeforces Beta Round #2",
+        "handle": "tourist",
+        "rank": 14,
+        "ratingUpdateTimeSeconds": 1267124400,
+        "oldRating": 0,
+        "newRating": 1602
+        },
+        {
+        "contestId": 8,
+        "contestName": "Codeforces Beta Round #8",
+        "handle": "tourist",
+        "rank": 5,
+        "ratingUpdateTimeSeconds": 1270748700,
+        "oldRating": 1602,
+        "newRating": 1764
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "status": "OK",
+    "result": [
+    {
+        "contestId": 566,
+        "contestName": "VK Cup 2015 - Finals, online mirror",
+        "handle": "rng_58",
+        "rank": 1,
+        "ratingUpdateTimeSeconds": 1438284000,
+        "oldRating": 2849,
+        "newRating": 2941
+    },
+    {
+        "contestId": 566,
+        "contestName": "VK Cup 2015 - Finals, online mirror",
+        "handle": "ngfam_kongu",
+        "rank": 2,
+        "ratingUpdateTimeSeconds": 1438284000,
+        "oldRating": 2294,
+        "newRating": 2383
+    }]
+}
