@@ -1,6 +1,8 @@
 # Codeforces 
 
-[![Unit tests](https://github.com/michelececcacci/codeforces/actions/workflows/test.yml/badge.svg)](https://github.com/michelececcacci/codeforces/actions/workflows/test.yml) [![codecov](https://codecov.io/github/michelececcacci/codeforces/branch/main/graph/badge.svg?token=E6JT1TXE9D)](https://codecov.io/github/michelececcacci/codeforces)
+[![Unit tests](https://github.com/michelececcacci/codeforces/actions/workflows/test.yml/badge.svg)](https://github.com/michelececcacci/codeforces/actions/workflows/test.yml) 
+[![Go Reference](https://pkg.go.dev/badge/github.com/michelececcacci/codeforces.svg)](https://pkg.go.dev/github.com/michelececcacci/codeforces)
+[![codecov](https://codecov.io/github/michelececcacci/codeforces/branch/main/graph/badge.svg?token=E6JT1TXE9D)](https://codecov.io/github/michelececcacci/codeforces)
 
 Implements all the methods mentioned in the [codeforces api](https://codeforces.com/apiHelp).
 Creating a client is really simple, all you have to do is:
