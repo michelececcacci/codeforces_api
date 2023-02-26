@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Version              = "v.0.0.1"
+	Version              = "v.0.0.2"
 	defaultbaseURLString = "https://codeforces.com/api/"
 )
 
