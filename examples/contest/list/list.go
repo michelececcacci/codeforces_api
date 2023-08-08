@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	c := codeforces.NewClient("", "")
+	c, err := codeforces.NewCustomClient()
 	resp, err := c.Contest.List(false)
 	if err != nil {
 		fmt.Println(err)

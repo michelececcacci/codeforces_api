@@ -31,9 +31,9 @@ func TestCurrentDivision(t *testing.T) {
 
 func TestMaxDivision(t *testing.T) {
 	cases := []struct {
-		user User
+		user        User
 		maxDivision uint
-	} {
+	}{
 		{user: User{MaxRating: 1000}, maxDivision: 4},
 		{user: User{MaxRating: 2000}, maxDivision: 2},
 		{user: User{MaxRating: 1200}, maxDivision: 4},

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	c := codeforces.NewClient("", "")
+	c, err := codeforces.NewCustomClient()
 	resp, err := c.Contest.Hacks(566)
 	if err != nil {
 		fmt.Println(err)

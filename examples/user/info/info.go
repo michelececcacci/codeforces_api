@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	c := codeforces.NewClient("", "")
+	c, err := codeforces.NewCustomClient()
 	resp, err := c.User.Info([]string{"tourist"})
 	if err != nil {
 		fmt.Println(err)

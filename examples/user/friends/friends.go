@@ -11,7 +11,7 @@ import (
 func main() {
 	key := os.Getenv("CF_API_KEY")
 	secret := os.Getenv("CF_API_SECRET")
-	c := codeforces.NewClient(key, secret)
+	c, err := codeforces.NewCustomClient(codeforces.AddApiKey(key), codeforces.AddApiSecret(secret))
 	resp, err := c.User.Friends(false)
 	if err != nil {
 		fmt.Println(err)

@@ -1,6 +1,3 @@
-//go:build integration
-// +build integration
-
 package codeforces
 
 // Currently used to verify the api endpoints are hit.
@@ -16,13 +13,17 @@ import (
 
 type IntegrationSuite struct {
 	suite.Suite
-	c Client
+	c client
 }
 
 func (suite *IntegrationSuite) SetupTest() {
 	apiKey := os.Getenv("CF_API_KEY")
 	apiSecret := os.Getenv("CF_API_SECRET")
-	suite.c = *NewClient(apiKey, apiSecret)
+	c, err := NewCustomClient(AddApiKey(apiKey), AddApiSecret(apiSecret))
+	if err != nil {
+		panic(err)
+	}
+	suite.c = *c
 }
 
 func TestIntegration(t *testing.T) {

@@ -5,6 +5,7 @@ package codeforces
 
 import (
 	"crypto/sha512"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -18,7 +19,7 @@ const (
 
 // holds a shared httpclient (could change) and the services
 // responsible for communicating with the various parts of the api
-type Client struct {
+type client struct {
 	Blog     *blogService
 	User     *userService
 	Contest  *contestService
@@ -26,18 +27,27 @@ type Client struct {
 	Actions  *actionsService
 }
 
-func NewClient(apiKey, apiSecret string) *Client {
-	c := newDefaultClientWrapper(defaultbaseURLString, apiKey, apiSecret)
-	return NewCustomClient(apiKey, apiSecret, c)
-}
+type option func(*client) error
 
-func NewCustomClient(apiKey, apiSecret string, c *httpClientWrapper) *Client {
-	return &Client{
-		Blog:    &blogService{c},
-		User:    &userService{c},
-		Contest: &contestService{c},
-		Actions: &actionsService{c},
+func NewCustomClient(opts ...option) (*client, error) {
+	cl := &httpClientWrapper{
+		baseUrlString: defaultbaseURLString,
+		client:        http.DefaultClient,
 	}
+	c := &client{
+		Actions:  &actionsService{cl},
+		Blog:     &blogService{cl},
+		Contest:  &contestService{cl},
+		Problems: &problemService{cl},
+		User:     &userService{cl},
+	}
+	for _, o := range opts {
+		err := o(c)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return c, nil
 }
 
 type httpClientWrapper struct {
@@ -45,6 +55,38 @@ type httpClientWrapper struct {
 	baseUrlString string
 	apiKey        string
 	apiSecret     string
+}
+
+func AddApiKey(key string) option {
+	return func(c *client) error {
+		if isClientNull(c) {
+			return errors.New("client has null services")
+		}
+		c.Actions.client.apiKey = key
+		c.Blog.client.apiKey = key
+		c.Contest.client.apiKey = key
+		c.Problems.client.apiKey = key
+		c.User.client.apiKey = key
+		return nil
+	}
+}
+
+func AddApiSecret(secret string) option {
+	return func(c *client) error {
+		if isClientNull(c) {
+			return errors.New("client has null services")
+		}
+		c.Actions.client.apiSecret = secret
+		c.Blog.client.apiSecret = secret
+		c.Contest.client.apiSecret = secret
+		c.Problems.client.apiSecret = secret
+		c.User.client.apiSecret = secret
+		return nil
+	}
+}
+
+func isClientNull(c *client) bool {
+	return c.Contest == nil || c.Actions == nil || c.Blog == nil || c.Problems == nil || c.User == nil
 }
 
 func newDefaultClientWrapper(baseUrlString, apiKey, apiSecret string) *httpClientWrapper {

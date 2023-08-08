@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	c := codeforces.NewClient("", "")
+	c, err := codeforces.NewCustomClient()
 	resp, err := c.Blog.Comments(79)
 	if err != nil {
 		fmt.Println(err)
